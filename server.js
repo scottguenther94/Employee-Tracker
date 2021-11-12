@@ -1,10 +1,8 @@
-// defining necessary modules/packages and PORT
 require('dotenv').config();
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const PORT = process.env.PORT || 3001;
-// add a .env file or change properties below
 const db = mysql.createConnection(
     {
         host: process.env.DB_HOST,
@@ -14,12 +12,12 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the employees_db database.`)
 );
-// empty arrays to be used in inquirer prompt choices
+// Arrays for sections in Inquirer prompts
 let departmentArray = [];
 let roleArray = [];
 let employeeArray = [];
 let managerArray = [];
-// functions below to fill arrays with current data from database
+// Populating data into arrays
 function getDepartmentArray() {
     departmentArray = [];
     db.query('SELECT * FROM department', (err, res) => {
@@ -55,12 +53,12 @@ function getManagerArray() {
         }
     })
 }
-// to establish connection to employees_db database then calling the start function
+// Connecting database and running inquirer
 db.connect(function(err) {
     if (err) throw err;
     start();
 });
-// displays all available choices then the switch statement executes a function based on the user's response
+// Inquirer prompts that use switch cases to view different menus
 function start() {
     inquirer.prompt({
         type: "list",
@@ -110,7 +108,7 @@ function start() {
             }
         })
 }
-// displays departments
+// Displays data based on user choice
 function viewDepartments() {
     db.query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
@@ -118,7 +116,7 @@ function viewDepartments() {
         start();
     })    
 }
-// displays roles with their salary and what department they belong to
+
 function viewRoles() {
     db.query('SELECT role.id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.id', (err, roles) => {
         if (err) throw err;
@@ -126,7 +124,7 @@ function viewRoles() {
         start();
     })
 }
-// displays employees's details sorted by the user's choice 
+
 function viewEmployees() {
     inquirer.prompt({
         type: "list",
@@ -142,7 +140,7 @@ function viewEmployees() {
             })
         })
 }
-// adds a department named by the user
+// Inquirer prompts to add data into db
 function addDepartment() {
     inquirer.prompt({
         type: "input",
@@ -157,7 +155,7 @@ function addDepartment() {
             })
         })
 }
-// adds a role, user determines role, salary, and what department it's under
+
 function addRole() {
     getDepartmentArray();
     inquirer.prompt([
@@ -194,7 +192,7 @@ function addRole() {
                 })
         })
 }
-// adds an employee, user inputs the name, role, and manager of the employee, 
+
 function addEmployee() {
     getRoleArray();
     getManagerArray();
@@ -241,7 +239,7 @@ function addEmployee() {
                 })
         })
 }
-// updates an existing employee's role
+// Allows user to update employees that exist in db already
 function updateEmployee() {
     getEmployeeArray();
     getRoleArray();
@@ -273,7 +271,7 @@ function updateEmployee() {
             })
         })
 }
-// updates an existing employee's manager
+// Allows user to update which employees are under which managers
 function updateManager() {
     getEmployeeArray();
     getManagerArray();
@@ -305,7 +303,7 @@ function updateManager() {
             })
         })
 }
-// deletes a department that the user chooses
+// Deletes data based on user choice in inquirer
 function deleteDepartment() {
     getDepartmentArray();
     inquirer.prompt([
@@ -328,7 +326,7 @@ function deleteDepartment() {
             })
         })
 }
-// deletes a role that the user chooses
+
 function deleteRole() {
     getRoleArray();
     inquirer.prompt([
@@ -351,7 +349,7 @@ function deleteRole() {
             })
         })
 }
-//deletes an employee that the user chooses
+
 function deleteEmployee() {
     getEmployeeArray();
     inquirer.prompt([
@@ -375,7 +373,7 @@ function deleteEmployee() {
             })
         })
 }
-// closes the application
+// Exits the application 
 function quit() {
     process.exit();
 }
