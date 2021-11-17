@@ -11,12 +11,19 @@ const db = mysql.createConnection(
         database: process.env.DB_NAME
     }
 );
+
 require('dotenv').config();
 // Inquirer prompt arrays
 let employees = [];
 let roles = [];
 let departments = [];
 let managers = [];
+
+// Running Inquirer and connect the database
+db.connect(function(err) {
+    if(err) throw err;
+    start();
+});
 
 // Function to populate the employee array with db data
 function employeeArray() {
