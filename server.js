@@ -292,4 +292,7 @@ function updateManager() {
             })
         })
 }
-
+// Quits out of the app
+function exit() {
+    process.exit();
+}
